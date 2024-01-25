@@ -2,6 +2,7 @@ const blogRouter = require("express").Router()
 const Blog = require("../models/blog")
 const User = require("../models/user")
 const log = require("../utils/logger")
+const jwt = require("jsonwebtoken")
 
 blogRouter.get("/", async(req, res) => {
   const blogs = await Blog
@@ -12,21 +13,27 @@ blogRouter.get("/", async(req, res) => {
 })
 
 blogRouter.post("/", async(req, res) => {
-  const { title, author, url, likes, user } = req.body
+  const decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: "token invalid" })
+  }
+
+  const { title, author, url, likes } = req.body
+  const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
     title: title,
     author: author,
     url: url,
     likes: likes ? likes : 0,
-    user: user
+    user: user._id
   })
 
   const savedBlog = await blog.save()
-  const userById = await User.findById({ _id: user })
 
-  userById.blogs = userById.blogs.concat(savedBlog.id)
-  await userById.save()
+  user.blogs = user.blogs.concat(savedBlog.id)
+  await user.save()
 
   log.info("successfully updated user")
 

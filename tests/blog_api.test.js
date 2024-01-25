@@ -21,16 +21,19 @@ test("correct amount of blogs are returned as json" , async() => {
   expect(res.body).toHaveLength(3)
 })
 
-test("blogs can be added", async() => {
+test("blogs can be added, with a valid token", async() => {
+  const token = (await api.post("/api/login").send({ username: "ajuti", password: "sekret" })).body.token
+
   const res = await api
     .post("/api/blogs")
+    .set("authorization", token)
     .send(
       {
         title: "fourth blog",
         author: "ajuti",
         url: "hei.net",
         likes: 8,
-        user: "65b2bde9944514049ef47aab"
+        user: "65b2bde9944514049ef47aab",
       }
     )
   expect(res.status).toBe(201)
