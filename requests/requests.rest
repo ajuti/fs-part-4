@@ -13,3 +13,23 @@ Content-Type: application/json
 }
 
 ###
+
+### dont run again if already created 
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "ajuti",
+  "name": "A. Jutila",
+  "password": "sekret"
+}
+
+###
+
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "ajuti",
+  "password": "sekret"
+}
