@@ -3,30 +3,12 @@ const supertest = require("supertest")
 const app = require("../app")
 const Blog = require("../models/blog")
 const log = require("../utils/logger")
-
-const initBlogs = [
-  {
-    title: "first blog",
-    author: "ajuti",
-    url: "moi.fi",
-    likes: 12
-  },
-  {
-    title: "second blog",
-    author: "cankkuboy",
-    url: "yo.com",
-    likes: 29
-  },
-  {
-    title: "third blog",
-    author: "jesshei",
-    url: "sup.org",
-    likes: 14
-  }
-]
+const helper = require("./test_helper")
 
 beforeEach(async() => {
   await Blog.deleteMany({})
+  const initBlogs = helper.initBlogs
+
   await Blog.insertMany(initBlogs)
 })
 
@@ -45,18 +27,20 @@ test("blogs can be added", async() => {
     .send(
       {
         title: "fourth blog",
-        author: "laemoi",
+        author: "ajuti",
         url: "hei.net",
-        likes: 8
+        likes: 8,
+        user: "65b2bde9944514049ef47aab"
       }
     )
   expect(res.status).toBe(201)
   expect(res.body).toMatchObject(
     {
       title: "fourth blog",
-      author: "laemoi",
+      author: "ajuti",
       url: "hei.net",
-      likes: 8
+      likes: 8,
+      user: "65b2bde9944514049ef47aab"
     }
   )
   const allBlogs = await api.get("/api/blogs")
@@ -77,7 +61,7 @@ test("blogs are initialized with 0 likes, if no likes attribute is given", async
     .send(
       {
         title: "fourth blog",
-        author: "laemoi",
+        author: "ajuti",
         url: "hei.net",
       }
     )

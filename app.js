@@ -7,6 +7,7 @@ const mongoose = require("mongoose")
 const app = express()
 const blogRouter = require("./controllers/blogController")
 const errorMiddleware = require("./utils/middlewares/errorMiddleware")
+const userRouter = require("./controllers/userController")
 
 mongoose.set("strictQuery", false)
 
@@ -26,6 +27,7 @@ app.use(express.json())
 
 /* Routers */
 app.use("/api/blogs", blogRouter)
+app.use("/api/users", userRouter)
 
 app.use(errorMiddleware)
 
