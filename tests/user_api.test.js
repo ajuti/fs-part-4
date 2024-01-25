@@ -28,5 +28,7 @@ beforeEach(async() => {
 test("initial user is found", async() => {
   const users = await api.get("/api/users") 
 
+  log.info(users.body)
+
   expect(users.body[0].username).toBe("ajuti")
 })

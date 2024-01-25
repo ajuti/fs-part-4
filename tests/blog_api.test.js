@@ -44,7 +44,7 @@ test("blogs can be added", async() => {
     }
   )
   const allBlogs = await api.get("/api/blogs")
-  expect(allBlogs.body).toHaveLength(initBlogs.length + 1)
+  expect(allBlogs.body).toHaveLength(helper.initBlogs.length + 1)
 })
 
 test("blogs have a field called id", async() => {
@@ -63,6 +63,7 @@ test("blogs are initialized with 0 likes, if no likes attribute is given", async
         title: "fourth blog",
         author: "ajuti",
         url: "hei.net",
+        user: "65b2bde9944514049ef47aab",
       }
     )
   expect(res.body.likes).toBeDefined()

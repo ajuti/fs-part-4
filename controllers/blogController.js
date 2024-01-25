@@ -3,16 +3,16 @@ const Blog = require("../models/blog")
 const User = require("../models/user")
 const log = require("../utils/logger")
 
-blogRouter.get("/", (req, res) => {
-  Blog
+blogRouter.get("/", async(req, res) => {
+  const blogs = await Blog
     .find({})
-    .then(blogs => {
-      res.json(blogs)
-    })
+    .populate("user")
+  
+  res.json(blogs)
 })
 
 blogRouter.post("/", async(req, res) => {
-  const { title, author, url, likes, user } = await req.body
+  const { title, author, url, likes, user } = req.body
 
   const blog = new Blog({
     title: title,
