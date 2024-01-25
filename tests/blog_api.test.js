@@ -110,8 +110,8 @@ describe("updating", () => {
       .send({ updatedLikes })
 
     expect(update.status).toBe(200)
-    
-    const updatedDoc = (await api.get(`/api/blogs`)).body.find(doc => doc.id === id)
+
+    const updatedDoc = (await api.get("/api/blogs")).body.find(doc => doc.id === id)
 
     expect(updatedDoc.likes).toBe(55)
   })
@@ -120,7 +120,7 @@ describe("updating", () => {
     const update = await api
       .patch("/api/blogs/55b2b2a0f8625590e0934a55")
       .send({ updatedLikes: 88 })
-    
+
     expect(update.status).toBe(400)
   })
 
@@ -128,7 +128,7 @@ describe("updating", () => {
     const update = await api
       .patch("/api/blogs/65b2b570c627ac18cddb27cd")
       .send({ newLikes: 5 })
-    
+
     expect(update.status).toBe(400)
     expect(update.body.error).toBeDefined()
   })

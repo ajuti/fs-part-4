@@ -8,6 +8,7 @@ const app = express()
 const blogRouter = require("./controllers/blogController")
 const errorMiddleware = require("./utils/middlewares/errorMiddleware")
 const userRouter = require("./controllers/userController")
+const loginRouter = require("./controllers/loginController")
 
 mongoose.set("strictQuery", false)
 
@@ -28,6 +29,7 @@ app.use(express.json())
 /* Routers */
 app.use("/api/blogs", blogRouter)
 app.use("/api/users", userRouter)
+app.use("/api/login", loginRouter)
 
 app.use(errorMiddleware)
 
