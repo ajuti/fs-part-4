@@ -1,13 +1,13 @@
-const listHelper = require('../utils/list_helper')
+const listHelper = require("../utils/list_helper")
 
-test('dummy returns one', () => {
+test("dummy returns one", () => {
   const blogs = []
 
   const result = listHelper.dummy(blogs)
   expect(result).toBe(1)
 })
 
-describe('total likes', () => {
+describe("total likes", () => {
   const blogs = [
     {
       _id: "5a422a851b54a676234d17f7",
@@ -56,7 +56,7 @@ describe('total likes', () => {
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
       likes: 2,
       __v: 0
-    }  
+    }
   ]
 
   /*

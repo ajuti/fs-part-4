@@ -33,7 +33,7 @@ const mostLikes = (blogs) => {
   const summed = lodash.mapValues(authors, function(x) {
     return lodash.sumBy(x, "likes")
   })
-  const index = Object.values(summed).indexOf(lodash.max(Object.values(summed))) 
+  const index = Object.values(summed).indexOf(lodash.max(Object.values(summed)))
   return {
     author: Object.keys(summed)[index],
     likes: Object.values(summed)[index]

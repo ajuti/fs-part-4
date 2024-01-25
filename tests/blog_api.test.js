@@ -86,7 +86,7 @@ test("blogs are initialized with 0 likes, if no likes attribute is given", async
 })
 
 test("if post request doesnt contain both title and url fields, respond with 400", async() => {
-  const invalidBlogs = [{ title: "only title given", author: "mz", likes: 4 }, { author: "mz", url: "only url given", likes: 4}, { author: "neither is given", likes: 4 }]
+  const invalidBlogs = [{ title: "only title given", author: "mz", likes: 4 }, { author: "mz", url: "only url given", likes: 4 }, { author: "neither is given", likes: 4 }]
   const promiseArray = invalidBlogs.map(async(blog) => {
     return await api.post("/api/blogs").send(blog)
   })
@@ -95,6 +95,58 @@ test("if post request doesnt contain both title and url fields, respond with 400
   for (let res of fulfilled) {
     expect(res.status).toBe(400)
   }
+})
+
+test("deleting a post with given id works", async() => {
+  const initialBlogs = await api.get("/api/blogs")
+  const idToBeDeleted = initialBlogs.body[0].id
+  log.info(idToBeDeleted)
+
+  await api
+    .delete(`/api/blogs/${idToBeDeleted}`)
+    .expect(204)
+
+  const resultingBlogs = await api.get("/api/blogs")
+
+  const ids = resultingBlogs.body.map(blog => blog.id)
+
+  expect(ids).not.toContain(idToBeDeleted)
+})
+
+describe("updating", () => {
+  test("the amount of likes works, with correct id and new likeamount", async() => {
+    const id = (await api.get("/api/blogs")).body[0].id
+    log.info(id)
+
+    const updatedLikes = 55
+
+    const update = await api
+      .patch(`/api/blogs/${id}`)
+      .send({ updatedLikes })
+
+    expect(update.status).toBe(200)
+    
+    const updatedDoc = (await api.get(`/api/blogs`)).body.find(doc => doc.id === id)
+
+    expect(updatedDoc.likes).toBe(55)
+  })
+
+  test("doesnt work if called with invalid id", async() => {
+    const update = await api
+      .patch("/api/blogs/55b2b2a0f8625590e0934a55")
+      .send({ updatedLikes: 88 })
+    
+    expect(update.status).toBe(400)
+  })
+
+  test("doesnt work if no updatedLikes field", async() => {
+    const update = await api
+      .patch("/api/blogs/65b2b570c627ac18cddb27cd")
+      .send({ newLikes: 5 })
+    
+    expect(update.status).toBe(400)
+    expect(update.body.error).toBeDefined()
+  })
 })
 
 afterAll(async () => {
