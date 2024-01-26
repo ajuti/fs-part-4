@@ -13,27 +13,27 @@ blogRouter.get("/", async(req, res) => {
 })
 
 blogRouter.post("/", async(req, res) => {
-  const decodedToken = jwt.verify(req.token, process.env.SECRET)
+  const user = req.user
 
-  if (!decodedToken.id) {
+  if (!user) {
     return res.status(401).json({ error: "token invalid" })
   }
 
   const { title, author, url, likes } = req.body
-  const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
     title: title,
     author: author,
     url: url,
     likes: likes ? likes : 0,
-    user: user._id
+    user: user
   })
 
   const savedBlog = await blog.save()
 
-  user.blogs = user.blogs.concat(savedBlog.id)
-  await user.save()
+  const dbUser = await User.findById(user)
+  dbUser.blogs = dbUser.blogs.concat(savedBlog.id)
+  await dbUser.save()
 
   log.info("successfully updated user")
 
@@ -42,6 +42,11 @@ blogRouter.post("/", async(req, res) => {
 
 blogRouter.delete("/:id", async(req, res) => {
   const id = req.params.id
+  const blog = await Blog.findById({ _id: id })
+
+  if (!(req.user && req.user === blog.user.toString())) {
+    return res.status(401).json({ error: "token invalid" })
+  }
 
   await Blog.findByIdAndDelete(id)
   res.status(204).end()

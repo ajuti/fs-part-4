@@ -50,6 +50,21 @@ test("blogs can be added, with a valid token", async() => {
   expect(allBlogs.body).toHaveLength(helper.initBlogs.length + 1)
 })
 
+test("blogs cannot be added without proper token", async() => {
+  const res = await api
+    .post("/api/blogs")
+    .send(
+      {
+        title: "fourth blog",
+        author: "ajuti",
+        url: "hei.net",
+        likes: 8,
+        user: "65b2bde9944514049ef47aab",
+      }
+    )
+  expect(res.status).toBe(401)
+})
+
 test("blogs have a field called id", async() => {
   const res = await api.get("/api/blogs")
   for (let blog of res.body) {
@@ -59,8 +74,11 @@ test("blogs have a field called id", async() => {
 })
 
 test("blogs are initialized with 0 likes, if no likes attribute is given", async() => {
+  const token = (await api.post("/api/login").send({ username: "ajuti", password: "sekret" })).body.token
+
   const res = await api
     .post("/api/blogs")
+    .set("authorization", token)
     .send(
       {
         title: "fourth blog",
@@ -74,24 +92,29 @@ test("blogs are initialized with 0 likes, if no likes attribute is given", async
 })
 
 test("if post request doesnt contain both title and url fields, respond with 400", async() => {
+  const token = (await api.post("/api/login").send({ username: "ajuti", password: "sekret" })).body.token
+
   const invalidBlogs = [{ title: "only title given", author: "mz", likes: 4 }, { author: "mz", url: "only url given", likes: 4 }, { author: "neither is given", likes: 4 }]
   const promiseArray = invalidBlogs.map(async(blog) => {
-    return await api.post("/api/blogs").send(blog)
+    return await api.post("/api/blogs").set("authorization", token).send(blog)
   })
   const fulfilled = await Promise.all(promiseArray)
 
   for (let res of fulfilled) {
-    expect(res.status).toBe(400)
+    expect(res.status).toBe(401)
   }
 })
 
 test("deleting a post with given id works", async() => {
+  const token = (await api.post("/api/login").send({ username: "ajuti", password: "sekret" })).body.token
+
   const initialBlogs = await api.get("/api/blogs")
   const idToBeDeleted = initialBlogs.body[0].id
   log.info(idToBeDeleted)
 
   await api
     .delete(`/api/blogs/${idToBeDeleted}`)
+    .set("authorization", token)
     .expect(204)
 
   const resultingBlogs = await api.get("/api/blogs")
