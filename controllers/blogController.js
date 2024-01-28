@@ -37,7 +37,9 @@ blogRouter.post("/", async(req, res) => {
 
   log.info("successfully updated user")
 
-  res.status(201).json(savedBlog)
+  const populated = await Blog.find({_id: savedBlog._id}).populate("user")
+
+  res.status(201).json(populated[0])
 })
 
 blogRouter.delete("/:id", async(req, res) => {
@@ -65,6 +67,22 @@ blogRouter.patch("/:id", async(req, res, next) => {
     res.status(200).json({ updatedBlog })
   } else {
     next({ message: "malformatted id" })
+  }
+})
+
+blogRouter.put("/:id", async(req, res, next) => {
+  const id = req.params.id
+  const newBlog = req.body
+
+  if (!newBlog.likes) {
+    next({ message: "likes field missing" })
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(id, newBlog, { new: true }).populate("user")
+  if (updatedBlog) {
+    res.status(200).json(updatedBlog)
+  } else {
+    next({ message: "error updating likes" })
   }
 })
 

@@ -4,6 +4,7 @@ GET http://localhost:3003/api/blogs
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFqdXRpIiwiaWQiOiI2NWIyZDg5OTU1N2Q1NjczMWRhMTYzNWIiLCJpYXQiOjE3MDY0MzcxNzV9.M9MMcHMr1hiL3KmDsdjCTdsXOY5_eZiu6KlVcTu-If0
 
 {
   "title": "first doc",
@@ -19,8 +20,8 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "username": "ajuti",
-  "name": "A. Jutila",
+  "username": "cankku",
+  "name": "C. Kolho",
   "password": "sekret"
 }
 
