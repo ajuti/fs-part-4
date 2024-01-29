@@ -26,7 +26,7 @@ test("blogs can be added, with a valid token", async() => {
 
   const res = await api
     .post("/api/blogs")
-    .set("authorization", token)
+    .set("authorization", `Bearer ${token}`)
     .send(
       {
         title: "fourth blog",
@@ -78,7 +78,7 @@ test("blogs are initialized with 0 likes, if no likes attribute is given", async
 
   const res = await api
     .post("/api/blogs")
-    .set("authorization", token)
+    .set("authorization", `Bearer ${token}`)
     .send(
       {
         title: "fourth blog",
@@ -96,7 +96,7 @@ test("if post request doesnt contain both title and url fields, respond with 400
 
   const invalidBlogs = [{ title: "only title given", author: "mz", likes: 4 }, { author: "mz", url: "only url given", likes: 4 }, { author: "neither is given", likes: 4 }]
   const promiseArray = invalidBlogs.map(async(blog) => {
-    return await api.post("/api/blogs").set("authorization", token).send(blog)
+    return await api.post("/api/blogs").set("authorization", `Bearer ${token}`).send(blog)
   })
   const fulfilled = await Promise.all(promiseArray)
 
@@ -114,7 +114,7 @@ test("deleting a post with given id works", async() => {
 
   await api
     .delete(`/api/blogs/${idToBeDeleted}`)
-    .set("authorization", token)
+    .set("authorization", `Bearer ${token}`)
     .expect(204)
 
   const resultingBlogs = await api.get("/api/blogs")
