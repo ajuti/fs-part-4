@@ -14,7 +14,7 @@ blogRouter.get("/", async(req, res) => {
 
 blogRouter.post("/", async(req, res) => {
   const user = req.user
-  console.log(req.token)
+  console.log("Posting to root...")
 
   if (!user) {
     return res.status(401).json({ error: "token invalid" })

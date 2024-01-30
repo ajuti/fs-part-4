@@ -1,7 +1,7 @@
 const log = require("../../utils/logger")
 
 const errorMiddleware = (error, req, res, next) => {
-  log.error("ErrorMiddleware: ", error.name ,error.message)
+  log.error("ErrorMiddleware: ", error.name, error.message)
 
   if (error.name === "ValidationError") {
     return res.status(401).json({ error: error.message })
